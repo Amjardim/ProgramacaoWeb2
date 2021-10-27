@@ -1,0 +1,15 @@
+.formLabel {
+    text-align:center;
+}
+
+.celulaCentralizada {
+    text-align: center;
+}
+
+.campoErrado{
+    border:1px solid #ff0000;
+}
+
+.campoCerto{
+    border:1px solid #000000
+}
