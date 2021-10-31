@@ -15,7 +15,7 @@ def login_usuario(request):
         if usuario is not None:
             #usuario valido
             login(request, usuario)
-            return render(request, 'carteira/paginaInicial.html', {})
+            return render(request, 'carteira/paginaInicial.html', { 'username': usuario })
             
         else:
             #usuario invalido
