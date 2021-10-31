@@ -31,24 +31,24 @@ def registrar_usuario(request):
     if request.method == "POST":
         username = request.POST['username']
         senha = request.POST['password']
-        usuario = authenticate(request, username=username, password=senha)
-        
-        if usuario is None:
-            #Se usuario nao existe
+        senhaConfirmacao = request.POST['passwordConfirmation']
+        if senha != senhaConfirmacao:
+            messages.success(request, ('Senhas não conferem.'))
+            return render(request, './login/registrarusuario.html', {})
+            
+        if User.objects.filter(username=username).exists():
+        # Nome de usuario em uso
+            messages.success(request, ('Usuario ja registrado.'))
+            return render(request, './login/registrarusuario.html', {})
+        else:
+         #Se usuario nao existe
             first_name = request.POST['firstName']
             last_name = request.POST['lastName']
-            senhaConfirmacao = request.POST['passwordConfirmation']
-            if senha != senhaConfirmacao:
-                messages.success(request, ('Senhas não conferem.'))
-                return render(request, './login/registrarusuario.html', {})
-            else:
-                usuario = User.objects.create_user(username, username, senha)
-                usuario.first_name = first_name
-                usuario.last_name = last_name
-                messages.success(request, ('Usuario registrado com sucesso. Faça o login'))
-                return render(request, './login/login.html', {})
-        else:
-            messages.success(request, ('Usuario ja registrado. Tente novamente'))
-            return render(request, './login/registrarusuario.html', {})
+            usuario = User.objects.create_user(username, username, senha)
+            usuario.first_name = first_name
+            usuario.last_name = last_name
+            usuario.save()
+            messages.success(request, ('Usuario registrado com sucesso. Faça o login'))
+            return render(request, './login/login.html', {})
     else:
         return render(request, './login/registrarusuario.html', {})
