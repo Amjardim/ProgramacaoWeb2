@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # criados
     'autenticador.apps.AutenticadorConfig',
+    'carteira.apps.CarteiraConfig',
 ]
 
 MIDDLEWARE = [
