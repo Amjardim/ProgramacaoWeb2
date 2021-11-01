@@ -8,18 +8,24 @@ from django.contrib import messages
 
 
 def login_usuario(request):
-    if request.method == "POST": 
+    if request.method == "POST":
+        print(oi)
         nome_usuario = request.POST['username']
         senha = request.POST['password']
         usuario = authenticate(request, username=nome_usuario, password=senha)
         if usuario is not None:
             #usuario valido
             login(request, usuario)
-            return render(request, 'carteira/paginaInicial.html', { 'username': usuario })
-            
+            return render(request, 'carteira/paginaInicial.html', 
+                        { 
+                            'username': usuario,
+                            'isValid' : True,
+                        })
         else:
             #usuario invalido
-            messages.success(request, ('Erro de autenticacao. Tente novamente'))
+            return HttpResponse(
+                    json.dumps({'errorText': 'Erro de autenticacao. Tente novamente'}, status=401)) 
+            #messages.success(request, ())
             return render(request, './login/loginInvalido.html', {})
     else:
         return render(request, './login/login.html', {})
