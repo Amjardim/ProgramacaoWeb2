@@ -1,31 +1,44 @@
 onload = function() {
-    document.getElementById('idFormCadastro').addEventListener('submit', loginUsuario);
+    document.getElementById('idLogin').addEventListener('click', loginUsuario);
     document.getElementById('idRegistrar').addEventListener('click', registrarUsuario);
-    
 }
 
 function loginUsuario(evento) {
     console.log('Login Usuario');
     var formData = new FormData();
-    formData.append('username',document.getElementById('idUsuario');
-    formData.append('password',document.getElementById('idSenha');
+    formData.append('username',document.getElementById('idUsuario').value);
+    formData.append('password',document.getElementById('idSenha').value);
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST",
                  "/login/",
                  true);
+    xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
     xmlhttp.onreadystatechange = function () {
-        if(xmlhttp.status== 200 && xmlhttp.readyState== 4) {
-            var resposta= JSON.parse(xmlhttp.responseText);
-            if(resposta.isValid) {
-                campoUsername.style= "border: 1px solid #FF0000";
-                document.getElementById('idMensagem').replaceChild(document.createTextNode(resposta.mensagem), document.getElementById('idMensagem').firstChild);
-            } else {
-                campoUsername.style= "border: 1px solid #00FF00";document.getElementById('idMensagem').replaceChild(document.createTextNode(resposta.mensagem), document.getElementById('idMensagem').firstChild);
-            }
-        }
+        var resposta= JSON.parse(xmlhttp.responseText);
+        alert(resposta.mensagem);
+//         if(reposta.isValid) {
+//             
+//         } else {
+//             alert(resposta.mensagem);
+//         }
     };
     xmlhttp.send(formData);
 }
 function registrarUsuario(evento) {
     
 }
+function csrfcookie() {
+    var cookieValue = null,
+        name = 'csrftoken';
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+};

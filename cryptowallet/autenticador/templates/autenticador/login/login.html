@@ -2,7 +2,9 @@
     <head>
         <meta charset="utf-8">
         {% load static %}
-        <script src="{% static 'autenticador/js/script.js'%}" type="text/javascript"></script>
+        <script src="{% static 'autenticador/js/script.js'%}" type="text/javascript">
+            window.CSRF_TOKEN = "{{ csrf_token }}"; 
+        </script>
         <title>
             Crypto Wallet
         </title>
@@ -10,9 +12,9 @@
     </head>
     <body>
         <h1>Crypto Wallet - Login</h1>
-        <form class="" id='idFormCadastro'>{% csrf_token %}
+        <form class="" method="post" action="noAction" id='idFormCadastro'>{% csrf_token %}
             <table>
-            <tr><td id='idMensagem' colspan='2'>&nbsp;</td></tr>
+            <td class='text' id='idMensagem'></td>
             <!--USUARIO-->
             <tr>
                 <td class='formLabel'>Usuario:</td>
@@ -25,12 +27,12 @@
                 <td><input type='text' name='password' id='idSenha' class='campoCerto'/></td>
                 <td id='idErrorSenha'>&nbsp;</td>
             </tr>
-            <!--BOTAO FAZER LOGIN -->
-            <tr>
-                <td class= 'celulaCentralizada' colspan='2'><input type='submit' value='Login'/></td>
-            </tr>
             </table>
         </form>
+        <!--BOTAO FAZER LOGIN -->
+        <tr>
+            <a id = 'idLogin' type='button' class= 'celulaCentralizada' colspan='2'>Login</a>
+        </tr>
         <tr>
             <a id = 'idRegistrar' onclick="location.href='http://127.0.0.1:8000/registrarusuario'" type='button' class= 'celulaCentralizada' colspan='2'>Registrar</a>
         </tr>

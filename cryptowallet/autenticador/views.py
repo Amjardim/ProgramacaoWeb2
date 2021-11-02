@@ -5,33 +5,32 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-
+from django.http import JsonResponse
 
 def login_usuario(request):
     if request.method == "POST":
-        print(oi)
         nome_usuario = request.POST['username']
         senha = request.POST['password']
         usuario = authenticate(request, username=nome_usuario, password=senha)
         if usuario is not None:
             #usuario valido
             login(request, usuario)
-            return render(request, 'carteira/paginaInicial.html', 
-                        { 
-                            'username': usuario,
-                            'isValid' : True,
-                        })
+            response_data = {   'mensagem': "autenticado",
+                                'username': nome_usuario,
+                                'isValid' : True}
+            return JsonResponse(response_data, status=200)
+                        
         else:
-            #usuario invalido
-            return HttpResponse(
-                    json.dumps({'errorText': 'Erro de autenticacao. Tente novamente'}, status=401)) 
-            #messages.success(request, ())
-            return render(request, './login/loginInvalido.html', {})
+            response_data = {   "mensagem" : "Usuario inválido",
+                                "isValid"  : False}
+            return JsonResponse(response_data, status=401)
     else:
-        return render(request, './login/login.html', {})
+        if 'username' in request.GET.values():
+            print(request.GET['username'] + " - Vim como esse cara aqui")
+        return render(request, 'autenticador/login/login.html', {})
 
 def login_nao_autorizado(request):
-    return render(request, './login/login.html', {})
+    return render(request, 'autenticador/login/login.html', {})
 
 def registrar_usuario(request):
     if request.method == "POST":
@@ -40,7 +39,7 @@ def registrar_usuario(request):
         senhaConfirmacao = request.POST['passwordConfirmation']
         if senha != senhaConfirmacao:
             messages.success(request, ('Senhas não conferem.'))
-            return render(request, './login/registrarusuario.html', {})
+            return render(request, 'autenticador/registrarUsuario/registrarusuario.html', {})
             
         if User.objects.filter(username=username).exists():
         # Nome de usuario em uso
@@ -57,4 +56,4 @@ def registrar_usuario(request):
             messages.success(request, ('Usuario registrado com sucesso. Faça o login'))
             return render(request, './login/login.html', {})
     else:
-        return render(request, './login/registrarusuario.html', {})
+        return render(request, 'autenticador/registrarUsuario/registrarusuario.html', {})
