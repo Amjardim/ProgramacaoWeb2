@@ -17,6 +17,7 @@ def login_usuario(request):
             login(request, usuario)
             response_data = {   'mensagem': "autenticado",
                                 'username': nome_usuario,
+                                'id'      : usuario.id,
                                 'isValid' : True}
             return JsonResponse(response_data, status=200)
                         

@@ -15,12 +15,16 @@ function loginUsuario(evento) {
     xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
     xmlhttp.onreadystatechange = function () {
         var resposta= JSON.parse(xmlhttp.responseText);
-        alert(resposta.mensagem);
-//         if(reposta.isValid) {
-//             
-//         } else {
-//             alert(resposta.mensagem);
-//         }
+        if(resposta.isValid) {
+//                 var nextPage = new XMLHttpRequest();
+//                 nextPage.open("GET",
+//                              "/carteira/",//+resposta.id,
+//                              true);
+//                nextPage.send();
+            location.assign('http://127.0.0.1:8000/carteira/'+resposta.id);
+        } else {
+            alert(resposta.mensagem);
+        }
     };
     xmlhttp.send(formData);
 }
