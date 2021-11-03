@@ -14,6 +14,21 @@ class Carteira(models.Model):
     moeda_padrao = models.CharField(max_length=200,choices=MoedaLocalDaCarteira.choices)
     #configuracao = models... [TODO]
     #para ter configuracoes especificas para cada carteira
+    
+    def getMoedasFromCarteira(self):
+        moedas_carteira = {}
+        for moeda in Moeda.objects.filter(carteira=self):
+            moeda_adicionada = {}
+            moeda_adicionada['nome'] = moeda.nome
+            moeda_adicionada['quantidade'] = moeda.quantidade
+            moedas_carteira[moeda.nome] = moeda_adicionada
+            
+        return moedas_carteira
+    
+    def criarCarteira(usuario):
+        carteira =  Carteira.objects.create(usuario_dono=usuario,moeda_padrao='BRL')
+        carteira.save()
+        return carteira
 
 class Moeda(models.Model):
     carteira = models.ForeignKey(Carteira,on_delete=models.CASCADE)
