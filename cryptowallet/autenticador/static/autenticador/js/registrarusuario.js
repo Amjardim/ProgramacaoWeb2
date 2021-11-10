@@ -20,7 +20,8 @@ function registrarUsuario(evento) {
     xmlhttp.onreadystatechange = function () {
         var resposta= JSON.parse(xmlhttp.responseText);
         if(resposta.encontrouProblema) {
-            document.getElementById('idCampoErro').value = resposta.mensagem;
+            console.log(resposta.mensagem);
+            document.getElementById('idMensagemErro').innerHTML = resposta.mensagem;
         } else {
             var xmlhttpRegistroBemSucedido = new XMLHttpRequest();
             location.assign('http://127.0.0.1:8000/login/'+resposta.username);

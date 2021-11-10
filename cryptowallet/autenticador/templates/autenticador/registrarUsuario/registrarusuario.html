@@ -12,9 +12,9 @@
     </head>
     <body>
         <h1>Crypto Wallet - Registrar Novo Usuario</h1>
-        <td class='formLabel' id='idCampoErro'></td>
         <form class="" method='POST' id='idFormCadastro'>{% csrf_token %}
             <table>
+                <label id='idMensagemErro'></label>
             <!--Email-->
             <tr>
                 <td class='formLabel'>Nome de Usuario:</td>
