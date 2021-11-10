@@ -1,46 +1,36 @@
 onload = function() {
-    var nome = temNomeUsuarioUrl();
-    if( nome != false ) {
-        document.getElementById('idUsuario').value = nome;
-    }
-    document.getElementById('idLogin').addEventListener('click', loginUsuario);
     document.getElementById('idRegistrar').addEventListener('click', registrarUsuario);
+    document.getElementById('idVoltar').addEventListener('click', voltar);
 }
 
-function loginUsuario(evento) {
-    console.log('Login Usuario');
+
+function registrarUsuario(evento) {
+    console.log('Registrar Usuario');
     var formData = new FormData();
-    formData.append('username',document.getElementById('idUsuario').value);
+    formData.append('username',document.getElementById('idUsername').value);
     formData.append('password',document.getElementById('idSenha').value);
+    formData.append('passwordConfirmation',document.getElementById('idConfirmadaSenha').value);
+    formData.append('firstName',document.getElementById('idPrimeiroNome').value);
+    formData.append('lastName',document.getElementById('idSobrenome').value);
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST",
-                 "/login/",
+                 "/registrarusuario/",
                  true);
     xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
     xmlhttp.onreadystatechange = function () {
         var resposta= JSON.parse(xmlhttp.responseText);
-        if(resposta.isValid) {
-            location.assign('http://127.0.0.1:8000/carteira/'+resposta.id);
+        if(resposta.encontrouProblema) {
+            document.getElementById('idCampoErro').value = resposta.mensagem;
         } else {
-            alert(resposta.mensagem);
+            var xmlhttpRegistroBemSucedido = new XMLHttpRequest();
+            location.assign('http://127.0.0.1:8000/login/'+resposta.username);
         }
     };
     xmlhttp.send(formData);
 }
 
-function registrarUsuario() {
-    location.assign('http://127.0.0.1:8000/registrarusuario');
-}
-
-
-function temNomeUsuarioUrl() {
-    var urlAtual = window.location.href.toString().split('/');
-    var ultimoElemento = urlAtual[urlAtual.length-1];
-    console.log(ultimoElemento);
-    if( ultimoElemento != 'login' ) {
-        return ultimoElemento;
-    }
-    return false
+function voltar() {
+    location.assign('http://127.0.0.1:8000/login');
 }
 
 function csrfcookie() {
