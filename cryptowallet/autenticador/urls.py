@@ -6,6 +6,7 @@ app_name = 'autenticador'
 
 urlpatterns = [
   # path('', autenticadores_django, name = '' ]
+  path('', views.login_usuario, name='login'),
   path('login/', views.login_usuario, name='login'),
   path('login/<str:username>', views.login_usuario, name='login'),
   path('registrarusuario/', views.registrar_usuario, name='regitrar_usuario')
