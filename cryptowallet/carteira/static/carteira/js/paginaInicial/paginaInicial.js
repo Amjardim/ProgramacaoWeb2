@@ -87,12 +87,47 @@ function configuraBotoesDeletar() {
     }    
 }
 
-function removeMoeda(botao) {
+function getFormDataMoedaRemover(botao) {
+
     var nome = botao.target.id.replace('idDelete','');
-    var table = document.getElementById('idCarteiraMoedas');
+    var row = document.getElementById(nome);
+    var cells = row.getElementsByTagName("td");
+    var moedaRemoveDict = {
+        'nome' : cells[0].innerHTML,
+        'qtd'  : cells[1].innerHTML,
+        'valor': cells[2].innerHTML,
+        'deleteButton' : genericDeleteButton.replace('%IDNAME%','idDelete'+nome)
+    };
+    return moedaRemoveDict;
+}
+
+function removeMoeda(botao) {
+    var dictDataMoedaRemover = getFormDataMoedaRemover(botao);
+    console.log(dictDataMoedaRemover);
+    //Remove Moeda da Tabela
+    var nome = botao.target.id.replace('idDelete','');
     var row = document.getElementById(nome);
     row.remove();
+    //Remove Moeda do Banco
+    removeMoedaDoBanco(dictDataMoedaRemover);
 }
+
+function removeMoedaDoBanco(dictDataMoedaRemover) {
+    var formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('nomeMoeda', dictDataMoedaRemover.nome);
+    formData.append('qtdMoeda', dictDataMoedaRemover.qtd);
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST",
+                 "/removemoeda/",
+                 true);
+    xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
+    xmlhttp.onreadystatechange = function () {
+        var resposta= JSON.parse(xmlhttp.responseText);
+    };
+    xmlhttp.send(formData);
+}
+
 
 function enviaMoedaParaBanco(dictDataMoedaNova) {
     var formData = new FormData();

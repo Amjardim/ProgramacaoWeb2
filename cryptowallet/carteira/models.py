@@ -29,7 +29,12 @@ class Carteira(models.Model):
         moeda = Moeda.objects.create(carteira=self,nome=nome,quantidade=qtd)
         moeda.save()
         return moeda
-    
+
+    def removeMoedaCarteira(self,nome,qtd):
+        for moeda in Moeda.objects.filter(carteira=self):
+            if moeda.nome == nome:
+                moeda.delete()
+            
     def criarCarteira(usuario):
         carteira =  Carteira.objects.create(usuario_dono=usuario,moeda_padrao='BRL')
         carteira.save()
