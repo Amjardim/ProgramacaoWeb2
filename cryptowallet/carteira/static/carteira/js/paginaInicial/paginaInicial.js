@@ -100,7 +100,6 @@ function configuraBotoesEdit() {
         var nome = row.innerText.split('\t')[0];
         var botaoEdit = document.getElementById('idEdit'+nome);
         botaoEdit.addEventListener('click',editaMoeda);
-        //botaoEdit.addEventListener('click',confirmaEdicao);
     }    
 }
 
@@ -110,17 +109,25 @@ function editaMoeda(botao) {
     var nome = botao.target.id.replace('idEdit','');
     cell = document.getElementById('IdQtd' + nome);
     valor = cell.innerText;
-    cell.innerHTML = '<input type="text" value='+valor+'></input>';
-    
+    cell.innerHTML = '<input id="IdInput" type="text" value='+valor+'></input>';
+    var botaoEdit = document.getElementById('idEdit'+nome);
+    botaoEdit.removeEventListener('click',editaMoeda);
+    botaoEdit.addEventListener('click',confirmaEdicao);
 }
 
-function confirmaEdicao(){
+function confirmaEdicao(botao){
    //Edita Moeda no Banco
-   var nome = botao.target.id.replace('idEdit','');
-    var row = document.getElementById(nome);
-    cell = row.getElementById('IdQtd' + nome);
-    valor = cell.value;
-    cell.innerHTML.replace('<input type="text">'+valor+'</input>',valor); 
+    botao.target.innerText = 'Edit';
+    var nome = botao.target.id.replace('idEdit','');
+    var botaoEdit = document.getElementById('idEdit'+nome);
+    var cell = document.getElementById('IdQtd' + nome);
+    var textEdit = document.getElementById("IdInput");
+    valor = textEdit.innerText;
+    console.log(valor);
+    cell.innerHTML = valor;
+    
+    botaoEdit.removeEventListener('click',confirmaEdicao);
+    botaoEdit.addEventListener('click',editaMoeda);
     //editaMoedaNoBanco(dictDataMoedaRemover); 
 }
 
