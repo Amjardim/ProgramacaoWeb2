@@ -1,0 +1,30 @@
+/* Solid border */
+hr.solid {
+    border-top: 3px solid #bbb;
+}
+
+table, th, td {
+    margin-right: 20px;
+    border: 4px solid black;
+}
+
+.moedas-table {
+    display: table;         
+    width: auto;         
+    background-color: #eee;         
+    border: 1px solid #666666;         
+    border-spacing: 5px; /* cellspacing:poor IE support for  this */
+}
+
+.float-left-child {
+    float: left;
+    margin-left: 20px;
+}
+
+.vl {
+    border-left: 6px solid black;
+    height: 500px;
+    left: 50%;
+    margin-left: -3px;
+    top: 0;
+}

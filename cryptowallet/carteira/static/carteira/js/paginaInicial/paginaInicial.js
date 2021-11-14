@@ -31,9 +31,9 @@ function adicionarMoeda() {
 function getFormDataMoedaNova() {
     var nome = 'BTC';
     var moedaNovaDict = {
-        'nome' : nome,
-        'qtd'  : '10' ,
-        'valor':'3.507.241 BRL',
+        'nome' : document.getElementById('idMoedaNova').value,
+        'qtd'  : document.getElementById('idQuantidade').value,
+        'valor':'x BRL',
         'deleteButton' : genericDeleteButton.replace('%IDNAME%','idDelete'+nome)
     };
     return moedaNovaDict;

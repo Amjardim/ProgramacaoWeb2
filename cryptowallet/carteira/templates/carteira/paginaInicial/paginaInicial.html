@@ -9,28 +9,56 @@
         <script src="{% static 'carteira/js/paginaInicial/paginaInicial.js'%}" type="text/javascript">
             window.CSRF_TOKEN = "{{ csrf_token }}"; 
         </script>
+        <link rel="stylesheet" href="{% static 'carteira/css/paginaInicial/paginaInicial.css'%}">
     </head>
     <body>
-        <h1>Crypto Wallet - Bem vindo: fulano</h1>
-        <table id='idCarteiraMoedas'>
-            <tr>
-                <th>Moeda</th>
-                <th>Quantidade</th>
-                <th>Valor</th>
-            </tr>
-            <tr id='ETH'>
-                <td>ETH</td>
-                <td>10</td>
-                <td>X</td>
-                <td><button id='idDeleteETH'>Delete</button></td>
-            </tr>
-            <tr id='DOGE'>
-                <td>DOGE</td>
-                <td>1502</td>
-                <td>Y</td>
-                <td><button id='idDeleteDOGE'>Delete</button></td>
-            </tr>
-        </table>
-        <td><button id='idAdicionar'>Adicionar</button></td>
+    <h1>Crypto Wallet - Bem vindo: fulano</h1>
+    <div class='parent'>
+        <div class='child float-left-child'>
+            <h2>Carteira</h1>
+            <table id='idCarteiraMoedas'>
+                <tr>
+                    <th>Moeda</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                </tr>
+                <tr id='ETH'>
+                    <td>ETH</td>
+                    <td>10</td>
+                    <td>X</td>
+                    <td><button id='idDeleteETH'>Delete</button></td>
+                </tr>
+                <tr id='DOGE'>
+                    <td>DOGE</td>
+                    <td>1502</td>
+                    <td>Y</td>
+                    <td><button id='idDeleteDOGE'>Delete</button></td>
+                </tr>
+            </table>
+            <hr class="solid">
+        </div>
+        <div class='child float-left-child'>
+            <div class="vl"></div> 
+        </div>        
+        <div class='child float-left-child'>
+            <h2>Adicione Novas Moedas</h1>
+            <table>
+                <tr>
+                    <td>Moeda:</td>
+                    <td><select name="Moeda" id="idMoedaNova">
+                        <option value="BTC">BTC</option>
+                        <option value="ETH">ETH</option>
+                        <option value="DOGE">DOGE</option>
+                        <option value="SOL">SOL</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Quantidade:</td>
+                    <td><input id='idQuantidade' type="number" step="2" value="0" required></td>
+                </tr>
+            </table>
+            <td><button id='idAdicionar'>Adicionar</button></td>
+        </div>
+    </div>
     </body>
 </html>
