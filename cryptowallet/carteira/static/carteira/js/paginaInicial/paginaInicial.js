@@ -1,4 +1,5 @@
-var genericDeleteButton = "<td><button id='%IDNAME%'>Delete</button></td>"
+var genericDeleteButton = "<td><button id='%IDDELETE%'>Delete</button></td>"
+var genericEditButton = "<td><button id='%IDEDIT%'>Edit</button></td>"
 var userId = 0;
 
 onload = function() {
@@ -37,9 +38,10 @@ function carregaTabelaCarteira(moedas) {
         moeda = moedas[moeda]
         var dictDataMoeda = {
             'nome' : moeda.nome,
-            'qtd'  : moeda.quantidade,
+            'qtd'  : moeda.quantidade, 
             'valor':'x BRL',
-            'deleteButton' : genericDeleteButton.replace('%IDNAME%','idDelete'+moeda.nome)
+            'deleteButton' : genericDeleteButton.replace('%IDDELETE%','idDelete'+moeda.nome),
+            'editButton' : genericEditButton.replace('%IDEDIT%','idEdit'+moeda.nome)
         };
         adicionaMoedaTabela(dictDataMoeda);
     }
@@ -53,11 +55,15 @@ function adicionaMoedaTabela(dictMoeda) {
     var cell2 = row.insertCell(1);
     var cell3 = row.insertCell(2);
     var cell4 = row.insertCell(3);
+    var cell5 = row.insertCell(4);
     cell1.innerHTML = dictMoeda.nome;
     cell2.innerHTML = dictMoeda.qtd;
+    cell2.id = 'IdQtd' + dictMoeda.nome;
     cell3.innerHTML = dictMoeda.valor;
     cell4.innerHTML = dictMoeda.deleteButton;
+    cell5.innerHTML = dictMoeda.editButton;
     configuraBotoesDeletar(dictMoeda);
+    configuraBotoesEdit(dictMoeda);
 }
 
 function adicionarMoedaNova() {
@@ -73,7 +79,8 @@ function getFormDataMoedaNova() {
         'nome' : nome,
         'qtd'  : document.getElementById('idQuantidade').value,
         'valor':'x BRL',
-        'deleteButton' : genericDeleteButton.replace('%IDNAME%','idDelete'+nome)
+        'deleteButton' : genericDeleteButton.replace('%IDDELETE%','idDelete'+nome),
+        'editButton' : genericEditButton.replace('%IDEDIT%','idEdit'+nome)
     };
     return moedaNovaDict;
 }
@@ -87,7 +94,37 @@ function configuraBotoesDeletar() {
     }    
 }
 
-function getFormDataMoedaRemover(botao) {
+function configuraBotoesEdit() {
+    var table = document.getElementById('idCarteiraMoedas');
+    for (var i = 1, row; row = table.rows[i]; i++) {
+        var nome = row.innerText.split('\t')[0];
+        var botaoEdit = document.getElementById('idEdit'+nome);
+        botaoEdit.addEventListener('click',editaMoeda);
+        //botaoEdit.addEventListener('click',confirmaEdicao);
+    }    
+}
+
+function editaMoeda(botao) {
+    //Edita Moeda na Tabela
+    botao.target.innerText = 'OK';
+    var nome = botao.target.id.replace('idEdit','');
+    cell = document.getElementById('IdQtd' + nome);
+    valor = cell.innerText;
+    cell.innerHTML = '<input type="text" value='+valor+'></input>';
+    
+}
+
+function confirmaEdicao(){
+   //Edita Moeda no Banco
+   var nome = botao.target.id.replace('idEdit','');
+    var row = document.getElementById(nome);
+    cell = row.getElementById('IdQtd' + nome);
+    valor = cell.value;
+    cell.innerHTML.replace('<input type="text">'+valor+'</input>',valor); 
+    //editaMoedaNoBanco(dictDataMoedaRemover); 
+}
+
+function getFormDataMoedaRemoverEditar(botao) {
 
     var nome = botao.target.id.replace('idDelete','');
     var row = document.getElementById(nome);
@@ -96,14 +133,31 @@ function getFormDataMoedaRemover(botao) {
         'nome' : cells[0].innerHTML,
         'qtd'  : cells[1].innerHTML,
         'valor': cells[2].innerHTML,
-        'deleteButton' : genericDeleteButton.replace('%IDNAME%','idDelete'+nome)
+        'deleteButton' : genericDeleteButton.replace('%IDDELETE%','idDelete'+nome),
+        'editButton' : genericEditButton.replace('%IDEDIT%','idEdit'+nome)
     };
     return moedaRemoveDict;
 }
 
+function editaMoedaNoBanco(dictDataMoedaRemover) {
+    var formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('nomeMoeda', dictDataMoedaRemover.nome);
+    formData.append('qtdMoeda', dictDataMoedaRemover.qtd);
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST",
+                 "/editamoeda/",
+                 true);
+    xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
+    xmlhttp.onreadystatechange = function () {
+        var resposta= JSON.parse(xmlhttp.responseText);
+    };
+    xmlhttp.send(formData);
+}
+
 function removeMoeda(botao) {
 
-    var dictDataMoedaRemover = getFormDataMoedaRemover(botao);
+    var dictDataMoedaRemover = getFormDataMoedaRemoverEditar(botao);
     console.log(dictDataMoedaRemover);
     //Remove Moeda da Tabela
     var nome = botao.target.id.replace('idDelete','');
