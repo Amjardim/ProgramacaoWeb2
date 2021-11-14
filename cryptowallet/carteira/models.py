@@ -25,6 +25,11 @@ class Carteira(models.Model):
             
         return moedas_carteira
     
+    def adicionaMoedaCarteira(self,nome,qtd):
+        moeda = Moeda.objects.create(carteira=self,nome=nome,quantidade=qtd)
+        moeda.save()
+        return moeda
+    
     def criarCarteira(usuario):
         carteira =  Carteira.objects.create(usuario_dono=usuario,moeda_padrao='BRL')
         carteira.save()

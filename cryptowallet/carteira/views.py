@@ -15,7 +15,6 @@ from . import models as CryptoWalletModels
 @login_required
 def carteira(request,id_usuario=0,auth=None):
     if request.method == "POST":
-        # na real esse bloco tem que ser um método que preenche os componentes
         try:
             response = {}
             usuario = User.objects.get(id=id_usuario)
@@ -52,4 +51,23 @@ def carteira(request,id_usuario=0,auth=None):
 def isUserAuthenticated(request):
     print(request.user)
     return  request.user.is_authenticated and request.COOKIES['csrftoken'] is not None and request.user.is_anonymous is False
-                      
+
+@login_required
+def adicionaMoeda(request):
+    if request.method == "POST":
+        try:
+            id_usuario = request.POST['userId']
+            nome_moeda = request.POST['nomeMoeda']
+            qtd_moeda = request.POST['qtdMoeda']
+            usuario = User.objects.get(id=id_usuario)
+            if CryptoWalletModels.Carteira.objects.filter(usuario_dono=usuario).exists():
+                carteira = CryptoWalletModels.Carteira.objects.get(usuario_dono=usuario)
+                moeda = carteira.adicionaMoedaCarteira(nome_moeda,qtd_moeda)
+            
+            response_data = {   'mensagem': "Inserido com sucesso.",
+                                'encontrouProblema' : False}
+            return JsonResponse(response_data, status=200) 
+        except User.DoesNotExist:
+            return HttpResponse(status=404)
+        except CryptoWalletModels.Carteira.DoesNotExist:
+            return HttpResponse(status=511)
