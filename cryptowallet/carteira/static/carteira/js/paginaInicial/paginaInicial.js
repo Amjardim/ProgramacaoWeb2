@@ -4,31 +4,66 @@ var userId = 0;
 onload = function() {
     var urlParams = window.location.href.split('/')    
     userId = urlParams[urlParams.length-1];
+    console.log("carreguei");
+    carregaPaginaInicial(userId);
 
     // configura botoes adicionar
-    document.getElementById('idAdicionar').addEventListener('click', adicionarMoeda);
+    document.getElementById('idAdicionar').addEventListener('click', adicionarMoedaNova);
     userId 
     // carrega moedas
     
-    // configura botoes de deletar
-    configuraBotoesDeletar();
 }
 
-function adicionarMoeda() {
+function carregaPaginaInicial(userId) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST",
+                 "/carteira/"+userId,
+                 true);
+    xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
+    xmlhttp.onreadystatechange = function () {
+        var resposta= JSON.parse(xmlhttp.responseText);
+        if( (resposta.encontrouProblema == false) &&
+            (xmlhttp.status == 200) &&
+            (xmlhttp.readyState == 4) ) {
+            console.log(resposta);
+            carregaTabelaCarteira(resposta.moedas);
+        }
+    };
+    xmlhttp.send();
+}
+
+function carregaTabelaCarteira(moedas) {
+    for( moeda in moedas ) {
+        moeda = moedas[moeda]
+        var dictDataMoeda = {
+            'nome' : moeda.nome,
+            'qtd'  : moeda.quantidade,
+            'valor':'x BRL',
+            'deleteButton' : genericDeleteButton.replace('%IDNAME%','idDelete'+moeda.nome)
+        };
+        adicionaMoedaTabela(dictDataMoeda);
+    }
+}
+
+function adicionaMoedaTabela(dictMoeda) {
     var table = document.getElementById("idCarteiraMoedas");
-    var dictDataMoedaNova = getFormDataMoedaNova();
     var row = table.insertRow(table.length);
-    row.id = dictDataMoedaNova.nome;
+    row.id = dictMoeda.nome;
     var cell1 = row.insertCell(0);
     var cell2 = row.insertCell(1);
     var cell3 = row.insertCell(2);
     var cell4 = row.insertCell(3);
-    cell1.innerHTML = dictDataMoedaNova.nome;
-    cell2.innerHTML = dictDataMoedaNova.qtd;
-    cell3.innerHTML = dictDataMoedaNova.valor;
-    cell4.innerHTML = dictDataMoedaNova.deleteButton;
-    configuraBotoesDeletar(dictDataMoedaNova);
-    
+    cell1.innerHTML = dictMoeda.nome;
+    cell2.innerHTML = dictMoeda.qtd;
+    cell3.innerHTML = dictMoeda.valor;
+    cell4.innerHTML = dictMoeda.deleteButton;
+    configuraBotoesDeletar(dictMoeda);
+}
+
+function adicionarMoedaNova() {
+    var dictDataMoedaNova = getFormDataMoedaNova();
+    console.log(dictDataMoedaNova);
+    adicionaMoedaTabela(dictDataMoedaNova);
     enviaMoedaParaBanco(dictDataMoedaNova);
 }
 
@@ -48,7 +83,6 @@ function configuraBotoesDeletar() {
     for (var i = 1, row; row = table.rows[i]; i++) {
         var nome = row.innerText.split('\t')[0];
         var botaoDelete = document.getElementById('idDelete'+nome);
-        console.log(nome);
         botaoDelete.addEventListener('click',removeMoeda);
     }    
 }
@@ -72,7 +106,6 @@ function enviaMoedaParaBanco(dictDataMoedaNova) {
     xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
     xmlhttp.onreadystatechange = function () {
         var resposta= JSON.parse(xmlhttp.responseText);
-        console.log(resposta);
     };
     xmlhttp.send(formData);
 }

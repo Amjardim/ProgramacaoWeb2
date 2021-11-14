@@ -21,14 +21,14 @@ def carteira(request,id_usuario=0,auth=None):
             response['username'] = usuario.first_name + usuario.last_name
             if CryptoWalletModels.Carteira.objects.filter(usuario_dono=usuario).exists():
                 carteira = CryptoWalletModels.Carteira.objects.get(usuario_dono=usuario)
-                response['moedas'] = carteira.getMoedasFromCarteira()
+                moedas = carteira.getMoedasFromCarteira()
+                response['moedas'] = moedas
             else:
                carteira = CryptoWalletModels.Carteira.criarCarteira(usuario) 
-            
+            print(moedas)
+            response['encontrouProblema'] = False;
             response['moeda_conversao'] = carteira.moeda_padrao
-            return render(  request,
-                            'carteira/paginaInicial/paginaInicial.html',
-                            response)
+            return JsonResponse(response, status=200) 
         except  User.DoesNotExist:
             return HttpResponse(status=404)
         ###################################################
