@@ -102,13 +102,14 @@ function getFormDataMoedaRemover(botao) {
 }
 
 function removeMoeda(botao) {
+
     var dictDataMoedaRemover = getFormDataMoedaRemover(botao);
     console.log(dictDataMoedaRemover);
     //Remove Moeda da Tabela
     var nome = botao.target.id.replace('idDelete','');
     var row = document.getElementById(nome);
     row.remove();
-    //Remove Moeda do Banco
+    //Remove Moeda do Banco 
     removeMoedaDoBanco(dictDataMoedaRemover);
 }
 

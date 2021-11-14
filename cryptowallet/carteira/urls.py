@@ -7,5 +7,6 @@ app_name = 'carteira'
 urlpatterns = [
   # path('', autenticadores_django, name = '' ]
   path('carteira/<int:id_usuario>', views.carteira, name='carteira_usuario'),
-  path('adicionamoeda/', views.adicionaMoeda, name='carteira_usuario')
+  path('adicionamoeda/', views.adicionaMoeda, name='carteira_usuario'),
+  path('removemoeda/', views.removeMoeda, name='carteira_usuario')
 ]
