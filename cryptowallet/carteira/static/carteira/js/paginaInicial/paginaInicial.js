@@ -4,7 +4,6 @@ var userId = 0;
 onload = function() {
     var urlParams = window.location.href.split('/')    
     userId = urlParams[urlParams.length-1];
-    console.log("carreguei");
     carregaPaginaInicial(userId);
 
     // configura botoes adicionar
@@ -25,7 +24,8 @@ function carregaPaginaInicial(userId) {
         if( (resposta.encontrouProblema == false) &&
             (xmlhttp.status == 200) &&
             (xmlhttp.readyState == 4) ) {
-            console.log(resposta);
+            
+            document.getElementById('idTituloPaginaInicial').innerHTML = document.getElementById('idTituloPaginaInicial').innerHTML + resposta.username;
             carregaTabelaCarteira(resposta.moedas);
         }
     };
