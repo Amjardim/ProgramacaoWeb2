@@ -56,3 +56,23 @@ def registrar_usuario(request, username=None):
             return JsonResponse(response_data, status=200) 
     else:
         return render(request, 'autenticador/registrarUsuario/registrarusuario.html', {})
+
+def logout_usuario(request,username=None):
+    if request.method == "POST":
+        try:
+            user_id = request.POST['userId']
+            user = User.objects.get(id=user_id)
+            if user.is_authenticated:
+                #usuario logado
+                logout(request)
+                response_data = {   'mensagem': "Logout Efetuado",
+                                'isValid' : True}
+                return JsonResponse(response_data, status=200)
+            else:
+                response_data = {'mensagem': "Usuario nao esta Logado",
+                                'isValid' : False}
+                return JsonResponse(response_data,status=401)
+        except  User.DoesNotExist:
+            response_data = {   "mensagem" : "Usuario nao existe",
+                                "isValid"  : False}
+            return JsonResponse(response_data, status=401)

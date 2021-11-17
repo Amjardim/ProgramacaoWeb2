@@ -8,10 +8,28 @@ onload = function() {
     carregaPaginaInicial(userId);
 
     // configura botoes adicionar
+    document.getElementById('idLogout').addEventListener('click', logoutUsuario);
     document.getElementById('idAdicionar').addEventListener('click', adicionarMoedaNova);
-    userId 
-    // carrega moedas
-    
+}
+
+function logoutUsuario(evento) {
+    console.log('Logout Usuario');
+    var formData = new FormData();
+    formData.append('userId',userId);
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST",
+                 "/logout/",
+                 true);
+    xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
+    xmlhttp.onreadystatechange = function () {
+        var resposta= JSON.parse(xmlhttp.responseText);
+        if(resposta.isValid) {
+            location.assign('http://127.0.0.1:8000/login/');
+        } else {
+            alert(resposta.mensagem);
+        }
+    };
+    xmlhttp.send(formData);
 }
 
 function carregaPaginaInicial(userId) {
@@ -57,8 +75,9 @@ function adicionaMoedaTabela(dictMoeda) {
     var cell4 = row.insertCell(3);
     var cell5 = row.insertCell(4);
     cell1.innerHTML = dictMoeda.nome;
+    cell1.id = 'idN' + dictMoeda.nome;
     cell2.innerHTML = dictMoeda.qtd;
-    cell2.id = 'IdQtd' + dictMoeda.nome;
+    cell2.id = 'idQtd' + dictMoeda.nome;
     cell3.innerHTML = dictMoeda.valor;
     cell4.innerHTML = dictMoeda.deleteButton;
     cell5.innerHTML = dictMoeda.editButton;
@@ -68,21 +87,16 @@ function adicionaMoedaTabela(dictMoeda) {
 
 function adicionarMoedaNova() {
     var dictDataMoedaNova = getFormDataMoedaNova();
-    console.log(dictDataMoedaNova);
-    adicionaMoedaTabela(dictDataMoedaNova);
-    enviaMoedaParaBanco(dictDataMoedaNova);
-}
-
-function getFormDataMoedaNova() {
-    var nome = document.getElementById('idMoedaNova').value;
-    var moedaNovaDict = {
-        'nome' : nome,
-        'qtd'  : document.getElementById('idQuantidade').value,
-        'valor':'x BRL',
-        'deleteButton' : genericDeleteButton.replace('%IDDELETE%','idDelete'+nome),
-        'editButton' : genericEditButton.replace('%IDEDIT%','idEdit'+nome)
-    };
-    return moedaNovaDict;
+    var nomeMoeda = document.getElementById('idN'+ dictDataMoedaNova.nome);
+    console.log(nomeMoeda)
+    if(nomeMoeda){
+        dictDataMoedaNova.qtd = dictDataMoedaNova.qtd + document.getElementById('idQtd'+ dictDataMoedaNova.nome)
+        editaMoedaNoBanco(dictDataMoedaNova);
+    } 
+    else{
+        adicionaMoedaTabela(dictDataMoedaNova);
+        enviaMoedaParaBanco(dictDataMoedaNova); 
+    }   
 }
 
 function configuraBotoesDeletar() {
@@ -103,35 +117,19 @@ function configuraBotoesEdit() {
     }    
 }
 
-function editaMoeda(botao) {
-    //Edita Moeda na Tabela
-    botao.target.innerText = 'OK';
-    var nome = botao.target.id.replace('idEdit','');
-    cell = document.getElementById('IdQtd' + nome);
-    valor = cell.innerText;
-    cell.innerHTML = '<input id="IdInput" type="text" value='+valor+'></input>';
-    var botaoEdit = document.getElementById('idEdit'+nome);
-    botaoEdit.removeEventListener('click',editaMoeda);
-    botaoEdit.addEventListener('click',confirmaEdicao);
+function getFormDataMoedaNova() {
+    var nome = document.getElementById('idMoedaNova').value;
+    var moedaNovaDict = {
+        'nome' : nome,
+        'qtd'  : document.getElementById('idQuantidade').value,
+        'valor':'x BRL',
+        'deleteButton' : genericDeleteButton.replace('%IDDELETE%','idDelete'+nome),
+        'editButton' : genericEditButton.replace('%IDEDIT%','idEdit'+nome)
+    };
+    return moedaNovaDict;
 }
 
-function confirmaEdicao(botao){
-   //Edita Moeda no Banco
-    botao.target.innerText = 'Edit';
-    var nome = botao.target.id.replace('idEdit','');
-    var botaoEdit = document.getElementById('idEdit'+nome);
-    var cell = document.getElementById('IdQtd' + nome);
-    var textEdit = document.getElementById("IdInput");
-    valor = textEdit.innerText;
-    console.log(valor);
-    cell.innerHTML = valor;
-    
-    botaoEdit.removeEventListener('click',confirmaEdicao);
-    botaoEdit.addEventListener('click',editaMoeda);
-    //editaMoedaNoBanco(dictDataMoedaRemover); 
-}
-
-function getFormDataMoedaRemoverEditar(botao) {
+function getFormDataMoedaRemover(botao) {
 
     var nome = botao.target.id.replace('idDelete','');
     var row = document.getElementById(nome);
@@ -144,6 +142,58 @@ function getFormDataMoedaRemoverEditar(botao) {
         'editButton' : genericEditButton.replace('%IDEDIT%','idEdit'+nome)
     };
     return moedaRemoveDict;
+}
+
+function getFormDataMoedaEditar(botao) {
+    var nome = botao.target.id.replace('idEdit','');
+    var row = document.getElementById(nome);
+    var cells = row.getElementsByTagName("td");
+    var moedaEditDict = {
+        'nome' : cells[0].innerHTML,
+        'qtd'  : cells[1].innerHTML,
+        'valor': cells[2].innerHTML,
+        'deleteButton' : genericDeleteButton.replace('%IDDELETE%','idDelete'+nome),
+        'editButton' : genericEditButton.replace('%IDEDIT%','idEdit'+nome)
+    };
+    return moedaEditDict;
+}
+
+function confirmaEdicao(botao){
+    //Insere valor editado e edita Moeda no Banco 
+    botao.target.innerText = 'Edit';
+    var nome = botao.target.id.replace('idEdit','');
+    var botaoEdit = document.getElementById('idEdit'+nome);
+    var cell = document.getElementById('idQtd' + nome);
+    var textEdit = document.getElementById("IdInput");
+    valor = textEdit.value;
+    cell.innerHTML = valor;
+    botaoEdit.removeEventListener('click',confirmaEdicao);
+    botaoEdit.addEventListener('click',editaMoeda);
+    var dictDataMoedaRemover = getFormDataMoedaEditar(botao)
+    editaMoedaNoBanco(dictDataMoedaRemover); 
+}
+
+function editaMoeda(botao) {
+    //Edita Moeda na Tabela
+    botao.target.innerText = 'OK';
+    var nome = botao.target.id.replace('idEdit','');
+    cell = document.getElementById('idQtd' + nome);
+    valor = cell.innerText;
+    cell.innerHTML = '<input id="IdInput" type="text" value='+valor+'></input>';
+    var botaoEdit = document.getElementById('idEdit'+nome);
+    botaoEdit.removeEventListener('click',editaMoeda);
+    botaoEdit.addEventListener('click',confirmaEdicao);
+}
+
+function removeMoeda(botao) {
+    var dictDataMoedaRemover = getFormDataMoedaRemover(botao);
+    console.log(dictDataMoedaRemover);
+    //Remove Moeda da Tabela
+    var nome = botao.target.id.replace('idDelete','');
+    var row = document.getElementById(nome);
+    row.remove();
+    //Remove Moeda do Banco 
+    removeMoedaDoBanco(dictDataMoedaRemover);
 }
 
 function editaMoedaNoBanco(dictDataMoedaRemover) {
@@ -162,18 +212,6 @@ function editaMoedaNoBanco(dictDataMoedaRemover) {
     xmlhttp.send(formData);
 }
 
-function removeMoeda(botao) {
-
-    var dictDataMoedaRemover = getFormDataMoedaRemoverEditar(botao);
-    console.log(dictDataMoedaRemover);
-    //Remove Moeda da Tabela
-    var nome = botao.target.id.replace('idDelete','');
-    var row = document.getElementById(nome);
-    row.remove();
-    //Remove Moeda do Banco 
-    removeMoedaDoBanco(dictDataMoedaRemover);
-}
-
 function removeMoedaDoBanco(dictDataMoedaRemover) {
     var formData = new FormData();
     formData.append('userId', userId);
@@ -189,7 +227,6 @@ function removeMoedaDoBanco(dictDataMoedaRemover) {
     };
     xmlhttp.send(formData);
 }
-
 
 function enviaMoedaParaBanco(dictDataMoedaNova) {
     var formData = new FormData();

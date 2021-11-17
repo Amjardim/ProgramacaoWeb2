@@ -11,7 +11,7 @@ from django.db import models
 
 
 from . import models as CryptoWalletModels
-# Create your views here.
+
 @login_required
 def carteira(request,id_usuario=0,auth=None):
     if request.method == "POST":
@@ -46,8 +46,7 @@ def carteira(request,id_usuario=0,auth=None):
             return HttpResponse(status=404)
         except Exception:
             return HttpResponse(status=511)
-        
-            
+                  
 def isUserAuthenticated(request):
     print(request.user)
     return  request.user.is_authenticated and request.COOKIES['csrftoken'] is not None and request.user.is_anonymous is False
@@ -72,6 +71,7 @@ def adicionaMoeda(request):
         except CryptoWalletModels.Carteira.DoesNotExist:
             return HttpResponse(status=511)
 
+@login_required
 def removeMoeda(request):
     if request.method == "POST":
         try:
@@ -91,6 +91,7 @@ def removeMoeda(request):
         except CryptoWalletModels.Carteira.DoesNotExist:
             return HttpResponse(status=511)
 
+@login_required
 def editaMoeda(request):
     if request.method == "POST":
         try:
