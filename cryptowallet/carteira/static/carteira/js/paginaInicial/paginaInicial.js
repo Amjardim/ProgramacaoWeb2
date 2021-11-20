@@ -1,5 +1,7 @@
 var genericDeleteButton = "<td><button id='%IDDELETE%'>Delete</button></td>"
 var genericEditButton = "<td><button id='%IDEDIT%'>Edit</button></td>"
+var tituloPaginaInicial = "Crypto Wallet - "
+
 var userId = 0;
 var moedaConversaoCarregamento = "";
 
@@ -45,8 +47,8 @@ function carregaPaginaInicial(userId) {
             (xmlhttp.status == 200) &&
             (xmlhttp.readyState == 4) ) {
             moedaConversaoCarregamento = resposta.moeda_conversao;
-            document.getElementById('idTituloPaginaInicial').innerHTML = document.getElementById('idTituloPaginaInicial').innerHTML + resposta.username;
-            document.getElementById('idUltimaAtualizacao').innerHTML = document.getElementById('idUltimaAtualizacao').innerHTML + resposta.atualizadoEm;
+            document.getElementById('idTituloPaginaInicial').innerHTML = tituloPaginaInicial + resposta.username;
+            document.getElementById('idUltimaAtualizacao').innerHTML = resposta.atualizadoEm;
             document.getElementById('idMoedaConversao').value = resposta.moeda_conversao;
 
             carregaTabelaCarteira(resposta.moedas, resposta.moeda_conversao);
@@ -259,6 +261,8 @@ function recalculaValoresMoedas(dropdown) {
     if( moeda != moedaConversaoCarregamento ) {
         alteraMoedaConversaoBanco(moeda);
         limpaTabela();
+        document.getElementById("idTituloPaginaInicial").innerText = tituloPaginaInicial;
+        document.getElementById("idUltimaAtualizacao").innerText = "";
         carregaPaginaInicial(userId);
     }
 }
