@@ -8,8 +8,9 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import JsonResponse,HttpResponse
 from django.db import models
-from . import conversormoedas
+from datetime import datetime
 
+from . import conversormoedas
 from . import models as CryptoWalletModels
 
 @login_required
@@ -25,10 +26,11 @@ def carteira(request,id_usuario=0,auth=None):
                 response['moedas'] = conversormoedas.ConversorMoedas.convertValorCryptoMoedaParaPapelMoeda(moedas,carteira.moeda_padrao)
             else:
                carteira = CryptoWalletModels.Carteira.criarCarteira(usuario) 
-            print(response['moedas'] )
             
             response['encontrouProblema'] = False;
+            response['atualizadoEm'] = datetime.now()
             response['moeda_conversao'] = carteira.moeda_padrao
+            print(response['atualizadoEm'])
             return JsonResponse(response, status=200) 
         except  User.DoesNotExist:
             return HttpResponse(status=404)

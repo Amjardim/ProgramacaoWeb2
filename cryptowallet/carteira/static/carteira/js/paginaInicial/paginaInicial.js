@@ -45,19 +45,19 @@ function carregaPaginaInicial(userId) {
             (xmlhttp.readyState == 4) ) {
             
             document.getElementById('idTituloPaginaInicial').innerHTML = document.getElementById('idTituloPaginaInicial').innerHTML + resposta.username;
-            carregaTabelaCarteira(resposta.moedas);
+            carregaTabelaCarteira(resposta.moedas, resposta.moeda_conversao);
         }
     };
     xmlhttp.send();
 }
 
-function carregaTabelaCarteira(moedas) {
+function carregaTabelaCarteira(moedas, moeda_conversao) {
     for( moeda in moedas ) {
         moeda = moedas[moeda]
         var dictDataMoeda = {
             'nome' : moeda.nome,
             'qtd'  : moeda.quantidade, 
-            'valor':'x BRL',
+            'valor': moeda.valor + moeda_conversao,
             'deleteButton' : genericDeleteButton.replace('%IDDELETE%','idDelete'+moeda.nome),
             'editButton' : genericEditButton.replace('%IDEDIT%','idEdit'+moeda.nome)
         };
