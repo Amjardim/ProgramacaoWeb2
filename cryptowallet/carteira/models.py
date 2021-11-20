@@ -35,16 +35,13 @@ class Carteira(models.Model):
             if moeda.nome == nome:
                 moeda.delete()
 
-    def editaMoedaCarteira(self,nome,qtd):
-       #for moeda in Moeda.objects.filter(carteira=self):
-           #if moeda.nome == nome:
-                #moeda.quantidade = qtd
-        for moeda in Moeda.objects.filter(carteira=self):
-            if moeda.nome == nome:
-                moeda.delete()
-        moeda = Moeda.objects.create(carteira=self,nome=nome,quantidade=qtd)
-        moeda.save()
-
+    def editaMoedaCarteira(self,nome_moeda,qtd):
+        if Moeda.objects.filter(carteira=self, nome=nome_moeda).exists():
+            moeda = Moeda.objects.get(carteira=self,nome=nome_moeda)
+            moeda.quantidade = qtd
+            moeda.save()
+        else:
+            raise Exception('Moeda inexistente nessa carteira')
              
             
     def criarCarteira(usuario):

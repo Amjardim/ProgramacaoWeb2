@@ -87,16 +87,22 @@ function adicionaMoedaTabela(dictMoeda) {
 
 function adicionarMoedaNova() {
     var dictDataMoedaNova = getFormDataMoedaNova();
-    var nomeMoeda = document.getElementById('idN'+ dictDataMoedaNova.nome);
-    console.log(nomeMoeda)
-    if(nomeMoeda){
-        dictDataMoedaNova.qtd = dictDataMoedaNova.qtd + document.getElementById('idQtd'+ dictDataMoedaNova.nome)
-        editaMoedaNoBanco(dictDataMoedaNova);
+    var moedaElement = document.getElementById('idN'+ dictDataMoedaNova.nome);
+    
+    if(moedaElement){
+        editaMoedaExistente(dictDataMoedaNova);
     } 
     else{
         adicionaMoedaTabela(dictDataMoedaNova);
         enviaMoedaParaBanco(dictDataMoedaNova); 
     }   
+}
+
+function editaMoedaExistente(dictDataMoedaEditar) {
+        var valor_atual=  parseInt(document.getElementById('idQtd'+ dictDataMoedaEditar.nome).innerText);
+        dictDataMoedaEditar.qtd = dictDataMoedaEditar.qtd + valor_atual;
+        document.getElementById('idQtd'+ dictDataMoedaEditar.nome).innerText = dictDataMoedaEditar.qtd;
+        editaMoedaNoBanco(dictDataMoedaEditar);
 }
 
 function configuraBotoesDeletar() {
@@ -121,7 +127,7 @@ function getFormDataMoedaNova() {
     var nome = document.getElementById('idMoedaNova').value;
     var moedaNovaDict = {
         'nome' : nome,
-        'qtd'  : document.getElementById('idQuantidade').value,
+        'qtd'  : parseInt(document.getElementById('idQuantidade').value),
         'valor':'x BRL',
         'deleteButton' : genericDeleteButton.replace('%IDDELETE%','idDelete'+nome),
         'editButton' : genericEditButton.replace('%IDEDIT%','idEdit'+nome)
@@ -169,8 +175,8 @@ function confirmaEdicao(botao){
     cell.innerHTML = valor;
     botaoEdit.removeEventListener('click',confirmaEdicao);
     botaoEdit.addEventListener('click',editaMoeda);
-    var dictDataMoedaRemover = getFormDataMoedaEditar(botao)
-    editaMoedaNoBanco(dictDataMoedaRemover); 
+    var dictDataMoedaEditar = getFormDataMoedaEditar(botao)
+    editaMoedaNoBanco(dictDataMoedaEditar); 
 }
 
 function editaMoeda(botao) {
@@ -196,11 +202,11 @@ function removeMoeda(botao) {
     removeMoedaDoBanco(dictDataMoedaRemover);
 }
 
-function editaMoedaNoBanco(dictDataMoedaRemover) {
+function editaMoedaNoBanco(dictDataMoedaEditar) {
     var formData = new FormData();
     formData.append('userId', userId);
-    formData.append('nomeMoeda', dictDataMoedaRemover.nome);
-    formData.append('qtdMoeda', dictDataMoedaRemover.qtd);
+    formData.append('nomeMoeda', dictDataMoedaEditar.nome);
+    formData.append('qtdMoeda', dictDataMoedaEditar.qtd);
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST",
                  "/editamoeda/",

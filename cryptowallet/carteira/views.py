@@ -110,3 +110,7 @@ def editaMoeda(request):
             return HttpResponse(status=404)
         except CryptoWalletModels.Carteira.DoesNotExist:
             return HttpResponse(status=511)
+        except Exception as e:
+            response_data = {   'mensagem': e,
+                                'encontrouProblema' : False}
+            return JsonResponse(response_data, status=511) 
