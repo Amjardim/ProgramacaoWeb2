@@ -45,6 +45,9 @@ function carregaPaginaInicial(userId) {
             (xmlhttp.readyState == 4) ) {
             
             document.getElementById('idTituloPaginaInicial').innerHTML = document.getElementById('idTituloPaginaInicial').innerHTML + resposta.username;
+            document.getElementById('idUltimaAtualizacao').innerHTML = document.getElementById('idUltimaAtualizacao').innerHTML + resposta.atualizadoEm;
+            document.getElementById('idMoedaConversao').value = resposta.moeda_conversao;
+
             carregaTabelaCarteira(resposta.moedas, resposta.moeda_conversao);
         }
     };
