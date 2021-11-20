@@ -217,9 +217,6 @@ function editaMoedaNoBanco(dictDataMoedaEditar) {
                  "/editamoeda/",
                  true);
     xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
-    xmlhttp.onreadystatechange = function () {
-        var resposta= JSON.parse(xmlhttp.responseText);
-    };
     xmlhttp.send(formData);
 }
 
@@ -233,9 +230,6 @@ function removeMoedaDoBanco(dictDataMoedaRemover) {
                  "/removemoeda/",
                  true);
     xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
-    xmlhttp.onreadystatechange = function () {
-        var resposta= JSON.parse(xmlhttp.responseText);
-    };
     xmlhttp.send(formData);
 }
 
@@ -249,9 +243,6 @@ function enviaMoedaParaBanco(dictDataMoedaNova) {
                  "/adicionamoeda/",
                  true);
     xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
-    xmlhttp.onreadystatechange = function () {
-        var resposta= JSON.parse(xmlhttp.responseText);
-    };
     xmlhttp.send(formData);
 }
 
@@ -276,9 +267,6 @@ function alteraMoedaConversaoBanco(moeda) {
                  "/moedaConversao/",
                  true);
     xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
-    xmlhttp.onreadystatechange = function () {
-        var resposta= JSON.parse(xmlhttp.responseText);
-    };
     xmlhttp.send(formData);   
     
 }
