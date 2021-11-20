@@ -1,6 +1,7 @@
 var genericDeleteButton = "<td><button id='%IDDELETE%'>Delete</button></td>"
 var genericEditButton = "<td><button id='%IDEDIT%'>Edit</button></td>"
 var userId = 0;
+var moedaConversaoCarregamento = "";
 
 onload = function() {
     var urlParams = window.location.href.split('/')    
@@ -10,6 +11,7 @@ onload = function() {
     // configura botoes adicionar
     document.getElementById('idLogout').addEventListener('click', logoutUsuario);
     document.getElementById('idAdicionar').addEventListener('click', adicionarMoedaNova);
+    document.getElementById('idMoedaConversao').addEventListener('change', recalculaValoresMoedas);
 }
 
 function logoutUsuario(evento) {
@@ -43,7 +45,7 @@ function carregaPaginaInicial(userId) {
         if( (resposta.encontrouProblema == false) &&
             (xmlhttp.status == 200) &&
             (xmlhttp.readyState == 4) ) {
-            
+            moedaConversaoCarregamento = resposta.moeda_conversao;
             document.getElementById('idTituloPaginaInicial').innerHTML = document.getElementById('idTituloPaginaInicial').innerHTML + resposta.username;
             document.getElementById('idUltimaAtualizacao').innerHTML = document.getElementById('idUltimaAtualizacao').innerHTML + resposta.atualizadoEm;
             document.getElementById('idMoedaConversao').value = resposta.moeda_conversao;
@@ -253,6 +255,45 @@ function enviaMoedaParaBanco(dictDataMoedaNova) {
     xmlhttp.send(formData);
 }
 
+
+function recalculaValoresMoedas(dropdown) {
+    var moeda = dropdown.target.value;
+    if( moeda != moedaConversaoCarregamento ) {
+        alteraMoedaConversaoBanco(moeda);
+        limpaTabela();
+        carregaPaginaInicial(userId);
+    }
+}
+
+function alteraMoedaConversaoBanco(moeda) {
+    var formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('moedaConversao', moeda);
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST",
+                 "/moedaConversao/",
+                 true);
+    xmlhttp.setRequestHeader("X-CSRFToken", csrfcookie());
+    xmlhttp.onreadystatechange = function () {
+        var resposta= JSON.parse(xmlhttp.responseText);
+    };
+    xmlhttp.send(formData);   
+    
+}
+
+function limpaTabela() {
+    var table = document.getElementById("idCarteiraMoedas");
+    var cabecarioTabela = 1;
+    var tamanhoTabela = table.rows.length;
+    console.log("Tam Tabela: " + tamanhoTabela);
+    if( tamanhoTabela > cabecarioTabela ) {
+        for( var i = tamanhoTabela-1; i > 0; i--) {
+            console.log("Apaguei: " + i);
+            table.deleteRow(i);
+        }
+    }
+}
+
 function csrfcookie() {
     var cookieValue = null,
         name = 'csrftoken';
@@ -268,3 +309,4 @@ function csrfcookie() {
     }
     return cookieValue;
 };
+

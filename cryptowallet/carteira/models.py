@@ -42,7 +42,10 @@ class Carteira(models.Model):
             moeda.save()
         else:
             raise Exception('Moeda inexistente nessa carteira')
-             
+    
+    def alteraMoedaConversao(self, moeda_conversao):
+        self.moeda_padrao = moeda_conversao
+        self.save()
             
     def criarCarteira(usuario):
         carteira =  Carteira.objects.create(usuario_dono=usuario,moeda_padrao='BRL')

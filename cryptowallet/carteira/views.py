@@ -116,4 +116,27 @@ def editaMoeda(request):
         except Exception as e:
             response_data = {   'mensagem': e,
                                 'encontrouProblema' : False}
-            return JsonResponse(response_data, status=511) 
+            return JsonResponse(response_data, status=511)
+@login_required       
+def alteraMoedaConversao(request):
+    if request.method == "POST":
+        try:
+            id_usuario = request.POST['userId']
+            moeda_conversao = request.POST['moedaConversao']
+            usuario = User.objects.get(id=id_usuario)
+            if CryptoWalletModels.Carteira.objects.filter(usuario_dono=usuario).exists():
+                carteira = CryptoWalletModels.Carteira.objects.get(usuario_dono=usuario)
+                carteira.alteraMoedaConversao(moeda_conversao)
+            
+            response_data = {   'mensagem': "Alterado com sucesso.",
+                                'encontrouProblema' : False}
+            return JsonResponse(response_data, status=200) 
+        except User.DoesNotExist:
+            return HttpResponse(status=404)
+        except CryptoWalletModels.Carteira.DoesNotExist:
+            return HttpResponse(status=511)
+        except Exception as e:
+            response_data = {   'mensagem': e,
+                                'encontrouProblema' : False}
+            return JsonResponse(response_data, status=511)
+    
