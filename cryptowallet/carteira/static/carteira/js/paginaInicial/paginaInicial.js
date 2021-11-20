@@ -15,7 +15,6 @@ onload = function() {
 }
 
 function logoutUsuario(evento) {
-    console.log('Logout Usuario');
     var formData = new FormData();
     formData.append('userId',userId);
     var xmlhttp = new XMLHttpRequest();
@@ -198,7 +197,6 @@ function editaMoeda(botao) {
 
 function removeMoeda(botao) {
     var dictDataMoedaRemover = getFormDataMoedaRemover(botao);
-    console.log(dictDataMoedaRemover);
     //Remove Moeda da Tabela
     var nome = botao.target.id.replace('idDelete','');
     var row = document.getElementById(nome);
@@ -285,10 +283,8 @@ function limpaTabela() {
     var table = document.getElementById("idCarteiraMoedas");
     var cabecarioTabela = 1;
     var tamanhoTabela = table.rows.length;
-    console.log("Tam Tabela: " + tamanhoTabela);
     if( tamanhoTabela > cabecarioTabela ) {
         for( var i = tamanhoTabela-1; i > 0; i--) {
-            console.log("Apaguei: " + i);
             table.deleteRow(i);
         }
     }

@@ -30,7 +30,6 @@ def carteira(request,id_usuario=0,auth=None):
             response['encontrouProblema'] = False;
             response['atualizadoEm'] = datetime.now()
             response['moeda_conversao'] = carteira.moeda_padrao
-            print(response['atualizadoEm'])
             return JsonResponse(response, status=200) 
         except  User.DoesNotExist:
             return HttpResponse(status=404)
@@ -51,7 +50,6 @@ def carteira(request,id_usuario=0,auth=None):
             return HttpResponse(status=511)
                   
 def isUserAuthenticated(request):
-    print(request.user)
     return  request.user.is_authenticated and request.COOKIES['csrftoken'] is not None and request.user.is_anonymous is False
 
 @login_required
