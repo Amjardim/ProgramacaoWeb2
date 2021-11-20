@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import JsonResponse,HttpResponse
 from django.db import models
-
+from . import conversormoedas
 
 from . import models as CryptoWalletModels
 
@@ -22,10 +22,11 @@ def carteira(request,id_usuario=0,auth=None):
             if CryptoWalletModels.Carteira.objects.filter(usuario_dono=usuario).exists():
                 carteira = CryptoWalletModels.Carteira.objects.get(usuario_dono=usuario)
                 moedas = carteira.getMoedasFromCarteira()
-                response['moedas'] = moedas
+                response['moedas'] = conversormoedas.ConversorMoedas.convertValorCryptoMoedaParaPapelMoeda(moedas,carteira.moeda_padrao)
             else:
                carteira = CryptoWalletModels.Carteira.criarCarteira(usuario) 
-            print(moedas)
+            print(response['moedas'] )
+            
             response['encontrouProblema'] = False;
             response['moeda_conversao'] = carteira.moeda_padrao
             return JsonResponse(response, status=200) 
@@ -57,7 +58,7 @@ def adicionaMoeda(request):
         try:
             id_usuario = request.POST['userId']
             nome_moeda = request.POST['nomeMoeda']
-            qtd_moeda = request.POST['qtdMoeda']
+            qtd_moeda = request.POST['qtdMoeda']           
             usuario = User.objects.get(id=id_usuario)
             if CryptoWalletModels.Carteira.objects.filter(usuario_dono=usuario).exists():
                 carteira = CryptoWalletModels.Carteira.objects.get(usuario_dono=usuario)
