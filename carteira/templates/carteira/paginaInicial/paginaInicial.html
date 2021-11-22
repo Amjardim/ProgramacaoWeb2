@@ -1,0 +1,60 @@
+<html lang="pt-BR" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Crypto Wallet
+        </title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+        {% load static %}
+        <script src="{% static 'carteira/js/paginaInicial/paginaInicial.js'%}" type="text/javascript">
+            window.CSRF_TOKEN = "{{ csrf_token }}"; 
+        </script>
+        <link rel="stylesheet" href="{% static 'carteira/css/paginaInicial/paginaInicial.css'%}">
+    </head>
+    <body>
+    <h1 id='idTituloPaginaInicial'>Crypto Wallet - </h1>
+    <td><select name="moedaConversao" id="idMoedaConversao">
+        <option value="BRL">BRL</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+    </select></td>
+    <div class='parent'>
+        <div class='child float-left-child'>
+            <h2>Carteira</h1>
+            <table id='idCarteiraMoedas'>
+                <tr>
+                    <th id="idMoeda">Moeda</th>
+                    <th id="idQtd">Quantidade</th>
+                    <th id="idValor">Valor</th>
+                </tr>
+            </table>
+            <small id='idUltimaAtualizacao'></small>
+            <hr class="solid">
+            <a id = 'idLogout' type='button' class= 'celulaCentralizada' colspan='2'>Logout</a>
+        </div>
+        <div class='child float-left-child'>
+            <div class="vl"></div> 
+        </div>        
+        <div class='child float-left-child'>
+            <h2>Adicione Novas Moedas</h1>
+            <table>
+                <tr>
+                    <td>Moeda:</td>
+                    <td><select name="Moeda" id="idMoedaNova">
+                        <option value="BTC">BTC</option>
+                        <option value="ETH">ETH</option>
+                        <option value="DOGE">DOGE</option>
+                        <option value="SOL">SOL</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>Quantidade:</td>
+                    <td><input id='idQuantidade' type="number" step="2" value="0" required></td>
+                </tr>
+            </table>
+            <td><button id='idAdicionar'>Adicionar</button></td>
+        </div>
+    </div>
+    </body>
+    <div></div>
+</html>
