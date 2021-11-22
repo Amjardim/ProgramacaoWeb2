@@ -27,7 +27,7 @@ function logoutUsuario(evento) {
     xmlhttp.onreadystatechange = function () {
         var resposta= JSON.parse(xmlhttp.responseText);
         if(resposta.isValid) {
-            location.assign('http://127.0.0.1:8000/login/');
+            location.assign('https://cryptowalletweb.herokuapp.com/login/');
         } else {
             alert(resposta.mensagem);
         }

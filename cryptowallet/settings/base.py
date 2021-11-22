@@ -118,7 +118,7 @@ USE_TZ = True
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-LOGIN_URL = 'http://127.0.0.1:8000/login'
+LOGIN_URL = 'https://cryptowalletweb.herokuapp.com/login'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/

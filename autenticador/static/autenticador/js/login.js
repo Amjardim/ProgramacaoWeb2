@@ -20,7 +20,7 @@ function loginUsuario(evento) {
     xmlhttp.onreadystatechange = function () {
         var resposta= JSON.parse(xmlhttp.responseText);
         if(resposta.isValid) {
-            location.assign('http://127.0.0.1:8000/carteira/'+resposta.id);
+            location.assign('https://cryptowalletweb.herokuapp.com/carteira/'+resposta.id);
         } else {
             alert(resposta.mensagem);
         }
@@ -29,7 +29,7 @@ function loginUsuario(evento) {
 }
 
 function registrarUsuario() {
-    location.assign('http://127.0.0.1:8000/registrarusuario');
+    location.assign('https://cryptowalletweb.herokuapp.com/registrarusuario');
 }
 
 

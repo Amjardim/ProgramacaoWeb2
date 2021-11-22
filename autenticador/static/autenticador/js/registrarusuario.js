@@ -24,14 +24,14 @@ function registrarUsuario(evento) {
             document.getElementById('idMensagemErro').innerHTML = resposta.mensagem;
         } else {
             var xmlhttpRegistroBemSucedido = new XMLHttpRequest();
-            location.assign('http://127.0.0.1:8000/login/'+resposta.username);
+            location.assign('https://cryptowalletweb.herokuapp.com/login/'+resposta.username);
         }
     };
     xmlhttp.send(formData);
 }
 
 function voltar() {
-    location.assign('http://127.0.0.1:8000/login');
+    location.assign('https://cryptowalletweb.herokuapp.com/login');
 }
 
 function csrfcookie() {
