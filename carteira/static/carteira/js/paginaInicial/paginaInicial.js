@@ -105,7 +105,7 @@ function adicionarMoedaNova() {
 }
 
 function editaMoedaExistente(dictDataMoedaEditar) {
-        var valor_atual=  parseInt(document.getElementById('idQtd'+ dictDataMoedaEditar.nome).innerText);
+        var valor_atual=  parseFloat(document.getElementById('idQtd'+ dictDataMoedaEditar.nome).innerText);
         dictDataMoedaEditar.qtd = dictDataMoedaEditar.qtd + valor_atual;
         document.getElementById('idQtd'+ dictDataMoedaEditar.nome).innerText = dictDataMoedaEditar.qtd;
         editaMoedaNoBanco(dictDataMoedaEditar);
@@ -133,7 +133,7 @@ function getFormDataMoedaNova() {
     var nome = document.getElementById('idMoedaNova').value;
     var moedaNovaDict = {
         'nome' : nome,
-        'qtd'  : parseInt(document.getElementById('idQuantidade').value),
+        'qtd'  : parseFloat(document.getElementById('idQuantidade').value),
         'valor':'x BRL',
         'deleteButton' : genericDeleteButton.replace('%IDDELETE%','idDelete'+nome),
         'editButton' : genericEditButton.replace('%IDEDIT%','idEdit'+nome)
